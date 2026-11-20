@@ -7,4 +7,3 @@ file_put_contents("ips.txt", $data, FILE_APPEND);
 ?>
 ```
 
-NoTrack AI — https://notrack.ai/
